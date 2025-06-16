@@ -1,0 +1,557 @@
+{
+  "name": "ERP AUTOMATION TOOL FINAL 1",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst bodyData = items.map((item) => item.json.body);\nreturn { xls: bodyData };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        0
+      ],
+      "id": "15e1c223-7927-4b04-a4e7-59642d5adbec",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wgtN1hbKUXz9A5RbDvnOgpORE1dj3HUFKRPxPYWU7EQ",
+          "mode": "list",
+          "cachedResultName": "financecustomer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wgtN1hbKUXz9A5RbDvnOgpORE1dj3HUFKRPxPYWU7EQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2022113684,
+          "mode": "list",
+          "cachedResultName": "HRMONOFF",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wgtN1hbKUXz9A5RbDvnOgpORE1dj3HUFKRPxPYWU7EQ/edit#gid=2022113684"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "=      {{ $json.xls[0].name }}",
+            "Email Address": "={{ $json.xls[0].email }}",
+            "Role / Designation": "={{ $json.xls[0].role }}",
+            "Form Type": "={{ $json.xls[0].formtype }}",
+            "Department": "={{ $json.xls[0].department }}",
+            "Loction": "={{ $json.xls[0].location }}",
+            "Date": "={{ $json.xls[0].date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role / Designation",
+              "displayName": "Role / Designation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Form Type",
+              "displayName": "Form Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Loction",
+              "displayName": "Loction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "xls",
+              "displayName": "xls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -140,
+        0
+      ],
+      "id": "0c1cc814-5359-4378-a787-8e1f28909e0b",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8083IteCIykjlvRy",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional HR assistant. Based on our automated onboarding and offboarding screening process, your task is to generate appropriate email content.\n\nInstructions:\n- If the candidate's `FormType` is `onboard`, write a **brief and professional onboarding email**.\n  - Mention that ERP user creation is complete, roles have been assigned based on department and seniority, and a welcome kit has been sent.\n  - End the message by stating that the onboarding process is marked as **completed**.\n\n- If the candidate's `FormType` is `offboard`, write a **formal and concise offboarding notification email**.\n  - Mention that access revocation is complete, data has been archived, and compliance checklists have been triggered.\n  - End the message by stating that the offboarding process is marked as **completed**.\n\nAdditional Notes:\n- This process also sends activity logs to HR and weekly compliance summaries to the Admin Head.\n\nInput Field:\n- FormType: `{{ $json['Form Type'] }}`\n\nTone: Formal, courteous, and HR-compliant.  \nOutput: Only the **email body content**, without subject, salutation, or footer.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        -220
+      ],
+      "id": "cfeece2a-838d-4ccb-8d9c-f763c5a192d2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        140
+      ],
+      "id": "c0a963f9-4996-4424-993c-082e06794e98",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3coB5s7b49zM0HgB",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=erp@snsgroups.com",
+        "subject": "=Formalites {{ $('Google Sheets').item.json['Form Type'] }}",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1480,
+        40
+      ],
+      "id": "846c9dcc-fc67-4498-85a4-b691ba45b297",
+      "name": "Gmail",
+      "webhookId": "2e076732-71ac-41cc-969c-41987a281f41",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "bA4jrdHhBk3W9d92",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cb66492e-5f8f-450d-a71c-a5877db83477",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        0
+      ],
+      "id": "a4d7b126-154c-47ed-852f-a9e468729a4c",
+      "name": "Webhook",
+      "webhookId": "cb66492e-5f8f-450d-a71c-a5877db83477"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e7e400b-751c-420d-ad83-632416390d87",
+              "leftValue": "={{ $json[\"Form Type\"] }}",
+              "rightValue": "onboard",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        -220
+      ],
+      "id": "a6284094-8d69-436a-a4c4-cd2c54ce2e84",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ac8bc680-bc16-412a-b482-f128edf60afe",
+              "leftValue": "={{ $json[\"Form Type\"] }}",
+              "rightValue": "offboard",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        200
+      ],
+      "id": "d2e6ed39-ba83-4af5-8082-b0dfd9f60187",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "url": "https://loingchain.rolemap.html",
+        "options": {}
+      },
+      "id": "cc52514a-88a7-4574-a261-393eb527f49e",
+      "name": "LangChain Role Mapper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        460,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp.zoho.com/deactivate",
+        "options": {}
+      },
+      "id": "a3db8af4-f4a3-40c5-a8dc-38269f659c71",
+      "name": "Deactivate ERP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        460,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://saas-tools.com/setup",
+        "options": {}
+      },
+      "id": "5af3f5fe-9707-4de9-8cb7-19f767e597f3",
+      "name": "Provision SaaS Tools",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://erp.zoho.com/setup",
+        "options": {}
+      },
+      "id": "81a2d074-089b-4b28-bc2d-8ac468228700",
+      "name": "Setup ERP Access",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://gmail-api.com/send",
+        "options": {}
+      },
+      "id": "f702c6ff-3a56-4e3c-81a5-53205d00205f",
+      "name": "Send Welcome Kit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://saas-tools.com/remove-access",
+        "options": {}
+      },
+      "id": "72d6b0e4-96f6-4cdf-9536-5dd122ef8240",
+      "name": "Remove SaaS Access",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        640,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://gmail-api.com/send",
+        "options": {}
+      },
+      "id": "4aca39b6-3ad5-46f4-bdaa-3a64432a4ea4",
+      "name": "Notify HR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        840,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "content": "LangChain Role Mapper\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        460,
+        -420
+      ],
+      "typeVersion": 1,
+      "id": "27de9bc4-bf8d-4a5d-9b5e-1dc6f2101714",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LangChain Role Mapper": {
+      "main": [
+        [
+          {
+            "node": "Provision SaaS Tools",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup ERP Access": {
+      "main": [
+        []
+      ]
+    },
+    "Provision SaaS Tools": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Kit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Kit": {
+      "main": [
+        [
+          {
+            "node": "Setup ERP Access",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deactivate ERP": {
+      "main": [
+        [
+          {
+            "node": "Remove SaaS Access",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove SaaS Access": {
+      "main": [
+        [
+          {
+            "node": "Notify HR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify HR": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0fa9b699-2cef-462d-851a-6c0b13b7a8af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e24f9dbfb2b28ea5148864a25d63bd35a57508c5ed8b1ba76eff44a019a8e512"
+  },
+  "id": "SqEn6D1OYlZTQglN",
+  "tags": []
+}
